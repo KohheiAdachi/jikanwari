@@ -27,6 +27,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var selectedDate = Date()
     var today: Date!
     let weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    var giveDate: String?
     
     @IBOutlet weak var headerPrevBtn: UIButton!
     @IBOutlet weak var headerNextBtn: UIButton!
@@ -34,17 +35,36 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var calendarHeaderView: UIView!
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     
-    //Prevタップ時
-    @IBAction func tappedHeaderPrevBtn(_ sender: UIButton) {
+    @IBAction func right(_ sender: Any) {
         selectedDate = dateManager.prevMonth(date: selectedDate)
         calendarCollectionView.reloadData()
-        headerTitle.text = changeHeaderTitle()
+        //headerTitle.text = changeHeaderTitle()
+        self.navigationItem.title = changeHeaderTitle()
     }
-    //Nextタップ時
-    @IBAction func tappedHeaderNextBtn(_ sender: UIButton) {
+    
+    @IBAction func left(_ sender: Any) {
         selectedDate = dateManager.nextMonth(date: selectedDate)
         calendarCollectionView.reloadData()
-        headerTitle.text = changeHeaderTitle()
+        //headerTitle.text = changeHeaderTitle()
+        self.navigationItem.title = changeHeaderTitle()
+    }
+    //Prevタップ時
+    @IBAction func tappedHeaderPrevBtn(_ sender: Any) {
+        selectedDate = dateManager.prevMonth(date: selectedDate)
+        calendarCollectionView.reloadData()
+        //headerTitle.text = changeHeaderTitle()
+        self.navigationItem.title = changeHeaderTitle()
+    }
+    //Nextタップ時
+    @IBAction func tappedHeaderNextBtn(_ sender: Any) {
+        selectedDate = dateManager.nextMonth(date: selectedDate)
+        calendarCollectionView.reloadData()
+        //headerTitle.text = changeHeaderTitle()
+        self.navigationItem.title = changeHeaderTitle()
+    }
+    
+    //画面遷移から戻る処理
+    @IBAction func unwindToCalendar(segue: UIStoryboardSegue){
     }
     
     override func viewDidLoad() {
@@ -54,7 +74,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         calendarCollectionView.dataSource = self
         calendarCollectionView.backgroundColor = UIColor.white
         
-        headerTitle.text = changeHeaderTitle()
+        self.navigationItem.title = changeHeaderTitle()
     }
     
     override func didReceiveMemoryWarning() {
@@ -86,18 +106,19 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CalendarCell
         //テキストカラー
         if (indexPath.row % 7 == 0) {
-            cell.textLabel.textColor = UIColor.lightRed()
+            cell.dateLabel.textColor = UIColor.lightRed()
         } else if (indexPath.row % 7 == 6) {
-            cell.textLabel.textColor = UIColor.lightBlue()
+            cell.dateLabel.textColor = UIColor.lightBlue()
         } else {
-            cell.textLabel.textColor = UIColor.gray
+            cell.dateLabel.textColor = UIColor.gray
         }
         //テキスト配置
         if indexPath.section == 0 {
-            cell.textLabel.text = weekArray[indexPath.row]
+            cell.dateLabel.text = weekArray[indexPath.row]
         } else {
-            print("xxx")
-            cell.textLabel.text = dateManager.conversionDateFormat(indexPath: indexPath)
+            //テスト表示
+            //print("xxx")
+            cell.dateLabel.text = dateManager.conversionDateFormat(indexPath: indexPath)
             //月によって1日の場所は異なる
         }
         
@@ -106,10 +127,17 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     //セルのサイズを設定
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let numberOfMargin: CGFloat = 8.0
-        let width: CGFloat = (collectionView.frame.size.width - cellMargin * numberOfMargin) / CGFloat(daysPerWeek)
-        let height: CGFloat = width * 1.0
-        return CGSize(width: width, height: height)
+        if indexPath.section == 0 {
+            let numberOfMargin: CGFloat = 8.0
+            let width: CGFloat = (collectionView.frame.size.width - cellMargin * numberOfMargin) / CGFloat(daysPerWeek)
+            let height: CGFloat = 20.0
+            return CGSize(width: width, height: height)
+        } else {
+            let numberOfMargin: CGFloat = 8.0
+            let width: CGFloat = (collectionView.frame.size.width - cellMargin * numberOfMargin) / CGFloat(daysPerWeek)
+            let height: CGFloat = (collectionView.frame.size.height - 20.0) / (CGFloat(dateManager.daysAcquisition()) / 7.0)
+            return CGSize(width: width, height: height)
+        }
         
     }
     
@@ -126,10 +154,38 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     //headerの月を変更
     func changeHeaderTitle() -> String {
         let formatter: DateFormatter = DateFormatter()
-        formatter.dateFormat = "M/yyyy"
+        formatter.dateFormat = "yyyy/MM"
         let selectMonth = formatter.string(from: selectedDate)
         return selectMonth
     }
+    
+    //CalendarCellタップ時の操作
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath)
+        giveDate = dateManager.getDate(indenxPath: indexPath)
+//        let formatter: DateFormatter = DateFormatter()
+//        formatter.dateFormat = "yyyy/MM/dd"
+//        giveDate = formatter.string(from: selectedDate)
+        performSegue(withIdentifier: "toCalendarViewController", sender: nil)
+//        let vc = self.storyboard?.instantiateViewController(withIdentifier: "CalendarViewController") as! CalendarViewController
+//        vc.receiveDate = giveDate!
+//        present(vc, animated: true, completion: nil)
+    }
+    
+    //画面遷移先にデータを渡す
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toCalendarViewController" {
+            let vc = segue.destination as! CalendarViewController
+            vc.receiveDate = giveDate!
+        }
+    }
+    
+//    func getDate() -> String {
+//        let formatter: DateFormatter = DateFormatter()
+//        formatter.dateFormat = "yyyy/MM/dd"
+//        let selectDate = formatter.string(from: selectedDate)
+//        return selectDate
+//    }
     
 }
 
