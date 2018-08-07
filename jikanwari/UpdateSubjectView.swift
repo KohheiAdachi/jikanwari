@@ -15,7 +15,7 @@ class UpdateSubjectView: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(receiveID)
-        var PreSubjectname = Subject.getdata(index: receiveID)
+        let PreSubjectname = Subject.getdata(index: receiveID)
         
         form +++ Section("科目情報")
             <<< NameRow("科目名"){ row in
@@ -38,7 +38,14 @@ class UpdateSubjectView: FormViewController {
                 $0.onCellSelection{ [unowned self] cell, row in
                     self.didtapUpdateButton()
                 }
-        }
+                }
+            +++ Section()
+            <<< ButtonRow(){
+                $0.title = "Delete"
+                $0.onCellSelection{ [unowned self] cell, row in
+                    self.didtapDeleteButton()
+                }
+                }.cellUpdate { cell, row in cell.textLabel?.textColor = UIColor.red; cell.backgroundColor = UIColor.white }
         // Do any additional setup after loading the view.
     }
 
@@ -54,7 +61,16 @@ class UpdateSubjectView: FormViewController {
         
         if(name != ""){
             Subject.updatedata(id: receiveID, updatename: name)
+            
+            self.navigationController?.popViewController(animated: true)
         }
+        
+    }
+    
+    func didtapDeleteButton(){
+        
+        Subject.deletedata(id: receiveID)
+        
         self.navigationController?.popViewController(animated: true)
     }
     

@@ -65,8 +65,25 @@ class Subject: Object {
         }
 
     }
+    class func deletedata(id :Int){
+        
+        do {
+            let realm = try! Realm()
+            let data = realm.object(ofType: Subject.self, forPrimaryKey: id)
+            try realm.write {
+                realm.delete(data!)  //「RealStudent」というモデルの中のデータを削除します。
+            }
+        } catch {
+            
+        }
+    }
+    
+    
+    
     
 }
+    
+
     
     
     
