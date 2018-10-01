@@ -30,7 +30,7 @@ class TableView: FormViewController {
                 $0.title = "教員"
                 $0.placeholder = "教員名を入力"
         }
-        
+
         // Button
             +++ Section()
             <<< ButtonRow(){
@@ -46,42 +46,25 @@ class TableView: FormViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
     func didtapSaveButton(){
         // Get the value of a single row
         let nameRow = form.rowBy(tag: "科目名") as! NameRow
         let name = nameRow.value ?? ""
         //print(name)
-        
+
         if(name != ""){
-            
+
             SubjectData.id = receiveID
             SubjectData.name = name
-            
-            
+
+
             Subject.writedata(id: receiveID, name: name)
-            
-//            do {
-//                let realm = try Realm()  // Realmのインスタンスを作成します。
-//                try! realm.write {
-//                    realm.add(self.SubjectData)  // 作成した「realm」というインスタンスにrealmDataを書き込みます。
-//                }
-//            } catch {
-//                print("Exception error")
-//            }
-//        if ((userDefaults.object(forKey: "Subject")) != nil) {
-//            print("データ有り")
-//            SubjectNames = userDefaults.array(forKey: "Subject") as! [String]
-//        }
-//
-//        // SubjectNames = userDefaults.array(forKey: "Subject") as! [String]
-//        SubjectNames[receiveID] = name
-//        userDefaults.set(SubjectNames,forKey: "Subject")
-//
+
         self.navigationController?.popViewController(animated: true)
-        
+
         }
-        
+
     }
     /*
     // MARK: - Navigation
@@ -92,7 +75,7 @@ class TableView: FormViewController {
         // Pass the selected object to the new view controller.
     }
     */
- 
 
-    
+
+
 }
