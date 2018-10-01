@@ -9,8 +9,8 @@
 import UIKit
 
 class ManjiViewController: UIViewController {
-    let userDefaults = UserDefaults.standard
-    var SubjectNames = Array(repeating:"", count:25)
+//    let userDefaults = UserDefaults.standard
+//    var SubjectNames = Array(repeating:"", count:25)
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,8 +26,8 @@ class ManjiViewController: UIViewController {
     
 
     @IBAction func jikanwariDelete(_ sender: Any) {
-        userDefaults.set(SubjectNames,forKey: "Subject")
-        userDefaults.synchronize()
+//        userDefaults.set(SubjectNames,forKey: "Subject")
+//        userDefaults.synchronize()
     }
     //userDefaults.removeObject(forKey: "Subject")
     /*

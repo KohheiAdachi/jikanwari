@@ -17,4 +17,5 @@ target 'jikanwari' do
     # Pods for testing
   end
   pod 'Eureka'
+  pod 'RealmSwift'
 end
